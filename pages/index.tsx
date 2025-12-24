@@ -64,7 +64,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
       <main className="mx-auto max-w-[1960px] p-4">
         {photoId && (
           <Modal
-            images={images}
+            images={filteredImages}
             onClose={() => {
               setLastViewedPhoto(photoId);
             }}

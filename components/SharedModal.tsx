@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import { variants } from "../utils/animationVariants";
 import downloadPhoto from "../utils/downloadPhoto";
@@ -27,25 +27,35 @@ export default function SharedModal({
 }: SharedModalProps) {
   const [loaded, setLoaded] = useState(false);
 
-  let filteredImages = images?.filter((img: ImageProps) =>
-    range(index - 15, index + 15).includes(img.id),
+  const currentImageIndex = images?.findIndex((img) => img.id === index) ?? -1;
+
+  const currentImage = images ? images[currentImageIndex] : currentPhoto;
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [index]);
+
+  if (!currentImage) {
+    return null;
+  }
+
+  let filteredImages = images?.filter((_, i) => 
+     i >= currentImageIndex - 15 && i <= currentImageIndex + 15
   );
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
-      if (index < images?.length - 1) {
-        changePhotoId(index + 1);
+      if (currentImageIndex < images?.length - 1) {
+        changePhotoId(images[currentImageIndex + 1].id);
       }
     },
     onSwipedRight: () => {
-      if (index > 0) {
-        changePhotoId(index - 1);
+      if (currentImageIndex > 0) {
+        changePhotoId(images[currentImageIndex - 1].id);
       }
     },
     trackMouse: true,
   });
-
-  let currentImage = images ? images[index] : currentPhoto;
 
   return (
     <MotionConfig
@@ -95,20 +105,20 @@ export default function SharedModal({
             <div className="relative aspect-[3/2] max-h-full w-full">
               {navigation && (
                 <>
-                  {index > 0 && (
+                  {currentImageIndex > 0 && (
                     <button
                       className="absolute left-3 top-[calc(50%-16px)] rounded-full bg-black/50 p-3 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white focus:outline-none"
                       style={{ transform: "translate3d(0, 0, 0)" }}
-                      onClick={() => changePhotoId(index - 1)}
+                      onClick={() => changePhotoId(images[currentImageIndex - 1].id)}
                     >
                       <ChevronLeftIcon className="h-6 w-6" />
                     </button>
                   )}
-                  {index + 1 < images.length && (
+                  {currentImageIndex + 1 < images.length && (
                     <button
                       className="absolute right-3 top-[calc(50%-16px)] rounded-full bg-black/50 p-3 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white focus:outline-none"
                       style={{ transform: "translate3d(0, 0, 0)" }}
-                      onClick={() => changePhotoId(index + 1)}
+                      onClick={() => changePhotoId(images[currentImageIndex + 1].id)}
                     >
                       <ChevronRightIcon className="h-6 w-6" />
                     </button>
@@ -166,7 +176,7 @@ export default function SharedModal({
           )}
           {/* Bottom Nav bar */}
           {navigation && (
-            <div className="fixed inset-x-0 bottom-0 z-40 overflow-hidden bg-gradient-to-b from-black/0 to-black/60">
+            <div className="fixed inset-x-0 bottom-0 z-[100] overflow-hidden bg-gradient-to-b from-black/0 to-black/60">
               <motion.div
                 initial={false}
                 className="mx-auto mt-6 mb-6 flex aspect-[3/2] h-14"
@@ -176,12 +186,12 @@ export default function SharedModal({
                     <motion.button
                       initial={{
                         width: "0%",
-                        x: `${Math.max((index - 1) * -100, 15 * -100)}%`,
+                        x: `${Math.max((currentImageIndex - 1) * -100, 15 * -100)}%`,
                       }}
                       animate={{
                         scale: id === index ? 1.25 : 1,
                         width: "100%",
-                        x: `${Math.max(index * -100, 15 * -100)}%`,
+                        x: `${Math.max(currentImageIndex * -100, 15 * -100)}%`,
                       }}
                       exit={{ width: "0%" }}
                       onClick={() => changePhotoId(id)}

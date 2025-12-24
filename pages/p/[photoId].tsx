@@ -7,7 +7,8 @@ import cloudinary from "../../utils/cloudinary";
 import getBase64ImageUrl from "../../utils/generateBlurPlaceholder";
 import type { ImageProps } from "../../utils/types";
 
-const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
+// 1. Update the Props type to include images
+const Home: NextPage = ({ currentPhoto, images }: { currentPhoto: ImageProps, images: ImageProps[] }) => {
   const router = useRouter();
   const { photoId } = router.query;
   let index = Number(photoId);
@@ -22,7 +23,8 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
         <meta name="twitter:image" content={currentPhotoUrl} />
       </Head>
       <main className="mx-auto max-w-[1960px] p-4">
-        <Carousel currentPhoto={currentPhoto} index={index} />
+        {/* 2. Pass the 'images' prop to the Carousel */}
+        <Carousel currentPhoto={currentPhoto} index={index} images={images} />
       </main>
     </>
   );
@@ -49,11 +51,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const currentPhoto = reducedResults.find(
     (img) => img.id === Number(context.params.photoId),
   );
-  currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
+  
+  // Handle case where photo isn't found (prevents crash)
+  if (currentPhoto) {
+    currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
+  }
 
   return {
     props: {
       currentPhoto: currentPhoto,
+      // 3. Pass the full list of images here so the carousel knows about neighbors
+      images: reducedResults, 
     },
   };
 };
@@ -72,6 +80,6 @@ export async function getStaticPaths() {
 
   return {
     paths: fullPaths,
-    fallback: false,
+    fallback: 'blocking', // Keep this as blocking or true
   };
 }

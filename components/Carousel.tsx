@@ -11,6 +11,7 @@ export default function Carousel({
 }: {
   index: number;
   currentPhoto: ImageProps;
+  images,
 }) {
   const router = useRouter();
   const [, setLastViewedPhoto] = useLastViewedPhoto();
