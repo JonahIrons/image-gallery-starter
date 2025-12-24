@@ -1,3 +1,11 @@
+# Project Demo
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=bPE1m007_C8">
+    <img src="https://img.youtube.com/vi/bPE1m007_C8/0.jpg" alt="Watch the video" />
+  </a>
+</div>
+
 # Next.js Image Gallery with Cloudinary Analysis
 This project is based on the [Next.js Image Gallery Starter](https://vercel.com/templates/next.js/image-gallery-starter) from Vercel. It is a modern image gallery built with Next.js, Tailwind CSS, and Cloudinary.
 
