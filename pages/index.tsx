@@ -31,6 +31,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
     return images.filter((img) => {
       const count = img.face_count || 0;
 
+      // Filter by 'groups' of people
       if (minFaces === 2) {
         return count >= 2;
       }
@@ -69,6 +70,43 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             }}
           />
         )}
+        <div className="flex justify-center gap-4 mb-8 sticky top-4 z-30">
+          <div className="bg-black/80 backdrop-blur-md p-2 rounded-full border border-white/20 shadow-xl flex gap-2">
+
+            {/* Button: All Photos */}
+            <button
+              onClick={() => setMinFaces(null)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${minFaces === null ? "bg-white text-black" : "text-white hover:bg-white/10"}`}
+            >
+              All Photos
+            </button>
+
+            {/* Button: No people */}
+            <button
+              onClick={() => setMinFaces(0)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${minFaces === 0 ? "bg-white text-black" : "text-white hover:bg-white/10"}`}
+            >
+              0 Faces
+            </button>
+
+            {/* Button: 1 person */}
+            <button
+              onClick={() => setMinFaces(1)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${minFaces === 1 ? "bg-white text-black" : "text-white hover:bg-white/10"}`}
+            >
+              1 Face
+            </button>
+
+            {/* Button: 2 or more people */}
+            <button
+              onClick={() => setMinFaces(2)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${minFaces === 2 ? "bg-white text-black" : "text-white hover:bg-white/10"}`}
+            >
+              2+ Faces
+            </button>
+
+          </div>
+        </div>
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
           <div className="after:content relative mb-5 flex h-[629px] flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
