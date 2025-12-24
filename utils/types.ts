@@ -6,7 +6,10 @@ export interface ImageProps {
   public_id: string;
   format: string;
   blurDataUrl?: string;
+  face_count?: number;
+  colors?: [string, number][]; //Array [HexCode, Percentage]
 }
+
 
 export interface SharedModalProps {
   index: number;
