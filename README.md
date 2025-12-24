@@ -1,31 +1,40 @@
-# Next.js & Cloudinary example app
+# Next.js Image Gallery with Cloudinary Analysis
+This project is based on the [Next.js Image Gallery Starter](https://vercel.com/templates/next.js/image-gallery-starter) from Vercel. It is a modern image gallery built with Next.js, Tailwind CSS, and Cloudinary.
 
-This example shows how to create an image gallery site using Next.js, [Cloudinary](https://cloudinary.com), and [Tailwind](https://tailwindcss.com).
+## New Feature: Face Count Filtering
+I implemented a dynamic filtering system that organizes images based on the number of people detected in the photo.
 
-## Deploy your own
+### Filtering options:
+- All images
+- No people (0 faces)
+- Solo (1 face)
+- Groups (2+ faces)
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or view the demo [here](https://nextconf-images.vercel.app/)
+## Technical Implementation
+- **Cloudinary Image Analysis:** The app takes advantage of Cloudinary's `face_count` metadata (accessed via the Admin API) to determine the composition of each image.
+- **State Management:** I utilized React useState to manage the active filter criteria.
+- **Client-Side Filtering:** The gallery re-renders the image grid in real-time without requiring a page reload or additional API calls, ensuring a clean user experience.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-cloudinary&project-name=nextjs-image-gallery&repository-name=with-cloudinary&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,CLOUDINARY_FOLDER&envDescription=API%20Keys%20from%20Cloudinary%20needed%20to%20run%20this%20application.)
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-cloudinary with-cloudinary-app
+## Setup & Installation
+Clone the repo:
+```
+git clone https://github.com/JonahIrons/image-gallery-starter
 ```
 
-```bash
-yarn create next-app --example with-cloudinary with-cloudinary-app
+Install dependencies:
+```
+npm install
 ```
 
-```bash
-pnpm create next-app --example with-cloudinary with-cloudinary-app
+Set up Environment Variables: Create a .env.local file in the root directory and add your Cloudinary credentials:
+```
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+CLOUDINARY_FOLDER=...
 ```
 
-## References
-
-- Cloudinary API: https://cloudinary.com/documentation/transformation_reference
+Run the development server:
+```
+npm run dev
+```
