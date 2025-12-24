@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Bridge from "../components/Icons/Bridge";
 import Logo from "../components/Icons/Logo";
 import Modal from "../components/Modal";
@@ -19,6 +19,26 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
 
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null);
 
+  const [minFaces, setMinFaces] = useState<number | null>(null);
+
+  // Create filtered image list based on user's face_count filter.
+  const filteredImages = useMemo(() => {
+    // No filter necessary
+    if (minFaces === null) {
+      return images;
+    }
+
+    return images.filter((img) => {
+      const count = img.face_count || 0;
+
+      if (minFaces === 2) {
+        return count >= 2;
+      }
+
+      return count === minFaces;
+    });
+  }, [images, minFaces]);
+
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
     if (lastViewedPhoto && !photoId) {
@@ -30,7 +50,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   return (
     <>
       <Head>
-        <title>Next.js Conf 2022 Photos</title>
+        <title>Jonah Irons ROBOSOURCE Assessment</title>
         <meta
           property="og:image"
           content="https://nextjsconf-pics.vercel.app/og-image.png"
@@ -59,22 +79,13 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             </div>
             <Logo />
             <h1 className="mt-8 mb-4 text-base font-bold uppercase tracking-widest">
-              2022 Event Photos
+              Jonah Irons ROBOSOURCE Assessment
             </h1>
             <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
-              Our incredible Next.js community got together in San Francisco for
-              our first ever in-person conference!
+              This project demo is Jonah Irons' assessment for the Summer 2026 Robosource Software Engineering Apprentice position. Image filtering functionality was added as the required feature for the assessment. Enjoy!
             </p>
-            <a
-              className="pointer z-10 mt-6 rounded-lg border border-white bg-white px-3 py-2 text-sm font-semibold text-black transition hover:bg-white/10 hover:text-white md:mt-4"
-              href="https://vercel.com/new/clone?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-cloudinary&project-name=nextjs-image-gallery&repository-name=with-cloudinary&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,CLOUDINARY_FOLDER&envDescription=API%20Keys%20from%20Cloudinary%20needed%20to%20run%20this%20application"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Clone and Deploy
-            </a>
           </div>
-          {images.map(({ id, public_id, format, blurDataUrl }) => (
+          {filteredImages.map(({ id, public_id, format, blurDataUrl }) => (
             <Link
               key={id}
               href={`/?photoId=${id}`}
@@ -102,34 +113,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
-        Thank you to{" "}
-        <a
-          href="https://edelsonphotography.com/"
-          target="_blank"
-          className="font-semibold hover:text-white"
-          rel="noreferrer"
-        >
-          Josh Edelson
-        </a>
-        ,{" "}
-        <a
-          href="https://www.newrevmedia.com/"
-          target="_blank"
-          className="font-semibold hover:text-white"
-          rel="noreferrer"
-        >
-          Jenny Morgan
-        </a>
-        , and{" "}
-        <a
-          href="https://www.garysextonphotography.com/"
-          target="_blank"
-          className="font-semibold hover:text-white"
-          rel="noreferrer"
-        >
-          Gary Sexton
-        </a>{" "}
-        for the pictures.
+        Images provided by Cloudinary starter images.
       </footer>
     </>
   );
@@ -142,6 +126,7 @@ export async function getStaticProps() {
     .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
     .sort_by("public_id", "desc")
     .max_results(400)
+    .with_field("image_analysis")
     .execute();
   let reducedResults: ImageProps[] = [];
 
@@ -153,6 +138,8 @@ export async function getStaticProps() {
       width: result.width,
       public_id: result.public_id,
       format: result.format,
+      face_count: result.image_analysis?.face_count || 0,
+      colors: result.image_analysis?.colors || [],
     });
     i++;
   }
