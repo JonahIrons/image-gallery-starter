@@ -27,8 +27,8 @@ export default function SharedModal({
 }: SharedModalProps) {
   const [loaded, setLoaded] = useState(false);
 
+  // Use 'current image index' for carousel image list, instead of using all images like before
   const currentImageIndex = images?.findIndex((img) => img.id === index) ?? -1;
-
   const currentImage = images ? images[currentImageIndex] : currentPhoto;
 
   useEffect(() => {
@@ -39,6 +39,7 @@ export default function SharedModal({
     return null;
   }
 
+  // Filtered image list using 'current image index'
   let filteredImages = images?.filter((_, i) => 
      i >= currentImageIndex - 15 && i <= currentImageIndex + 15
   );

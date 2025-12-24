@@ -7,7 +7,7 @@ import cloudinary from "../../utils/cloudinary";
 import getBase64ImageUrl from "../../utils/generateBlurPlaceholder";
 import type { ImageProps } from "../../utils/types";
 
-// 1. Update the Props type to include images
+// Update the Props type to include images
 const Home: NextPage = ({ currentPhoto, images }: { currentPhoto: ImageProps, images: ImageProps[] }) => {
   const router = useRouter();
   const { photoId } = router.query;
@@ -18,12 +18,12 @@ const Home: NextPage = ({ currentPhoto, images }: { currentPhoto: ImageProps, im
   return (
     <>
       <Head>
-        <title>Next.js Conf 2022 Photos</title>
+        <title>Jonah Irons ROBOSOURCE Assessment Photos</title>
         <meta property="og:image" content={currentPhotoUrl} />
         <meta name="twitter:image" content={currentPhotoUrl} />
       </Head>
       <main className="mx-auto max-w-[1960px] p-4">
-        {/* 2. Pass the 'images' prop to the Carousel */}
+        {/* Pass the 'images' prop to the Carousel */}
         <Carousel currentPhoto={currentPhoto} index={index} images={images} />
       </main>
     </>
@@ -52,7 +52,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     (img) => img.id === Number(context.params.photoId),
   );
   
-  // Handle case where photo isn't found (prevents crash)
+  // Handle case where photo isn't found
   if (currentPhoto) {
     currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
   }
@@ -60,7 +60,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       currentPhoto: currentPhoto,
-      // 3. Pass the full list of images here so the carousel knows about neighbors
+      // Pass the full list of images here so the carousel knows about neighbors
       images: reducedResults, 
     },
   };
@@ -80,6 +80,6 @@ export async function getStaticPaths() {
 
   return {
     paths: fullPaths,
-    fallback: 'blocking', // Keep this as blocking or true
+    fallback: 'blocking',
   };
 }

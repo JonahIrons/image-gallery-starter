@@ -70,6 +70,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             }}
           />
         )}
+        {/* Filter nav bar */}
         <div className="flex justify-center gap-4 mb-8 sticky top-4 z-30">
           <div className="bg-black/80 backdrop-blur-md p-2 rounded-full border border-white/20 shadow-xl flex gap-2">
 
